@@ -3,6 +3,30 @@ import Comment from '../models/commentModel.js';
 // const mongoose = require("mongoose");
 import mongoose from 'mongoose';
 import Data from '../models/userModel.js';
+import Feedback from '../models/feedback.js';
+
+
+const addFeedback = async (req, res) => {
+  //const { comment_details, blogid, email} = req.body;
+  const { title, content, email } = req.body;
+
+  console.log(req.body);
+
+  let useremail = email;
+  const userData = await Data.findOne({email: useremail});
+
+  // add to the database
+  try {
+    const feedback = await Feedback.create({
+      content : content,
+      userid : userData._id,
+      title : title
+    });
+    res.status(200).json(feedback);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 const getBlogs = async (req, res) => {
 
@@ -96,9 +120,13 @@ const getBlog = async (req, res) => {
   // res.status(200).json({blog,username,profilepic,comments, commentusernames, commentprofilepics});
 };
 
+
+
 // create a new blog
 const createBlog = async (req, res) => {
-  const { title, short_description, content, thumbnail, blogtype, like, email} = req.body;
+  const { title, content, email} = req.body;
+
+  console.log(req.body);
 
   let useremail = email;
   const userData = await Data.findOne({email: useremail});
@@ -109,17 +137,8 @@ const createBlog = async (req, res) => {
   if (!title) {
     emptyFields.push("title");
   }
-  if (!short_description) {
-    emptyFields.push("short_description");
-  }
   if (!content) {
     emptyFields.push("content");
-  }
-  if (!thumbnail) {
-    emptyFields.push("thumbnail");
-  }
-  if (!blogtype) {
-    emptyFields.push("blogtype");
   }
 
   if (emptyFields.length > 0) {
@@ -128,21 +147,26 @@ const createBlog = async (req, res) => {
       .json({ error: "Please fill in all fields", emptyFields });
   }
 
-  // add to the database
-  try {
-    const blog = await Blog.create({
-      title,
-      short_description,
-      content,
-      thumbnail,
-      blogtype,
-      like,
-      userid : userData._id
-    });
-    res.status(200).json(blog);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+  // const feedback = 
+
+
+
+  // // add to the database
+  // try {
+  //   const feedback = await Feedback.create({
+  //     title,
+  //     content,
+  //     userid : userData._id
+  //   });
+
+  //   await feedback.save();
+
+  //   console.log("data saved");
+
+  //   res.status(200).json(feedback);
+  // } catch (error) {
+  //   res.status(400).json({ error: error.message });
+  // }
 };
 
 // delete a blog
@@ -215,5 +239,6 @@ const blogController = {
   deleteBlog,
   updateBlog,
   addComment,
+  addFeedback,
 }
 export default blogController;
