@@ -1,6 +1,8 @@
 // const express = require('express')
 import express from 'express';
 import blogController from '../controllers/blogController.js';
+import User from '../models/userModel.js';
+import Feedback from '../models/feedback.js';
 
 const router = express.Router()
 
@@ -24,13 +26,16 @@ router.post('/comment', blogController.addComment)
 
 router.post('/createfeedback', blogController.addFeedback)
 
-router.get('/getFeedback', async (req, res) => {
+router.get('/feedback/getFeedback', async (req, res) => {
     try {
-        const allFeedback = await Feedback.find().populate('userid', 'email profilepic');
+        const allFeedback = await Feedback.find().populate('userid', 'fullname profilepic');
+        console.log("I am here");
+        console.log(allFeedback);
         res.json(allFeedback);
       } catch (error) {
         console.error('Error fetching feedback:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        //res.status(500).json({ error: 'Internal Server Error' });
+        res.json({mes : "Hwlloo"});
       }
   });
 

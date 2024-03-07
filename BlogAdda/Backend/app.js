@@ -31,7 +31,6 @@ import blogRoutes from './routes/blogRoute.js';
 import bodyParser from 'body-parser';
 app.use("/blog", blogRoutes);
 
-
 app.listen(8080, (err) => {
     console.log(err);
 })
